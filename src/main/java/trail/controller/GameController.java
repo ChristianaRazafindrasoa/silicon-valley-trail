@@ -1,43 +1,51 @@
 package trail.controller;
 
+import trail.model.City;
 import trail.model.State;
 import trail.view.ConsoleIO;
 
-public class GameController {
-    ConsoleIO io = new ConsoleIO();
-    State state = new State(20, 8_000, 100, 90, 35);
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Random;
 
-    public void run() {
+public class GameController {
+    private static final String FILE_PATH = "./state.json";
+    private final ConsoleIO io = new ConsoleIO();
+    private final GameEvents gameEvents = new GameEvents();
+    private StateSerializer stateSerializer = new StateSerializer();
+
+    public void run() throws IOException {
         boolean quit = false;
         while (!quit) {
-            quit = getMainMenu();
+            io.displayMainMenu();
+            int choice = io.getChoice(1, 3);
+            switch (choice) {
+                case 1:
+                    startNewGame();
+                    break;
+                case 2:
+                    State state = loadGame();
+                    runGameLoop(state);
+                    break;
+                case 3:
+                    System.out.println("Goodbye. 👋");
+                    quit = true;
+                    break;
+            }
         }
     }
 
-    private boolean getMainMenu() {
-        io.displayMainMenu();
-        int choice = io.getChoice(1, 3);
-        switch (choice) {
-            case 1:
-                startNewGame();
-                break;
-            case 2:
-                runGameLoop();
-                break;
-            case 3:
-                System.out.println("Goodbye. 👋");
-                break;
-        }
-        return choice == 3;
-    }
-
-    private void startNewGame() {
+     private void startNewGame() throws FileNotFoundException {
+        State state = new State(12, 5000, 100, 90, 35);
         io.displayInstructions();
         io.enterToStart();
-        runGameLoop();
+        runGameLoop(state);
     }
 
-    private void runGameLoop() {
+     private void runGameLoop(State state) throws FileNotFoundException {
         boolean exitToMenu = false;
         while (!exitToMenu) {
             io.displayProgressBar(state);
@@ -45,67 +53,93 @@ public class GameController {
             int choice = io.getChoice(1, 5);
             switch (choice) {
                 case 1:
-                    String currentCity = State.CITIES[state.cityIndex];
-                    System.out.printf("\n\n🚝Your team hops on the Caltrain, leaving %s...🚝\n", currentCity);
-                    state.cityIndex++;
-                    state.coffee -= 2;
-                    state.cash -= 500;
-                    state.teamMorale -= 15;
-                    System.out.printf("\n📍Arrived in %s station📍\n\n", State.CITIES[state.cityIndex]);
-                    io.enterToContinue();
+                    travel(state);
                     break;
                 case 2:
-                    System.out.println("\n⌨️Your team is working on cool features... ⌨️️️\n");
-                    state.coffee -= 4;
-                    state.laptopBattery -= 50;
-                    state.teamMorale -= 35;
-                    System.out.println("\n🫩That session drained your team and battery🫩️️️\n");
-                    io.enterToContinue();
+                    work(state);
                     break;
                 case 3:
-                    System.out.println("\n📢Your team is promoting your product...📢\n");
-                    state.cash -= 2000;
-                    state.laptopBattery -= 40;
-                    state.dailyActiveUsers += 70;
-                    System.out.println("\n👏Attracted new users. Let's go!👏️️️\n");
-                    io.enterToContinue();
+                    promote(state);
                     break;
                 case 4:
-                    System.out.println("\n🪫Your team is taking a well-deserved break...🪫\n");
-                    state.laptopBattery = 100;
-                    state.teamMorale += 45;
-                    System.out.println("\n🔋Nap was good and laptop is fully charged🔋\n");
-                    io.enterToContinue();
+                    recharge(state);
                     break;
                 case 5:
+                    saveGame(state);
                     exitToMenu = true;
                     break;
             }
-            if (isEndOfGame()) {
+            if (isEndOfGame(state)) {
                 exitToMenu = true;
+                io.enterToMenu();
             }
         }
     }
 
-    private boolean isEndOfGame() {
+    private void saveGame(State state) throws FileNotFoundException {
+        String json = stateSerializer.serialize(state);
+        try (PrintWriter writer = new PrintWriter(FILE_PATH)) {
+            writer.write(json);
+        }
+    }
+
+    private State loadGame() throws IOException {
+        String json = Files.readString(Path.of(FILE_PATH));
+        return stateSerializer.deserialize(json);
+    }
+
+    private void travel(State state) {
+        City currentCity = state.getCurrentCity();
+        state.cityIndex++;
+        state.coffee -= 2;
+        state.cash -= 500;
+        state.teamMorale -= 15;
+        io.displayTravelStatus(currentCity, state.getCurrentCity());
+        Event event = gameEvents.getRandomEvent(new Random(), state);
+        io.displayEvent(event);
+        int eventChoice = io.getChoice(1, event.options().size());
+        event.selected(eventChoice);
+    }
+
+    private void work(State state) {
+        state.coffee -= 4;
+        state.laptopBattery -= 50;
+        state.teamMorale -= 35;
+        io.displayWorkStatus();
+    }
+
+    private void promote(State state) {
+        state.cash -= 2000;
+        state.laptopBattery -= 40;
+        state.dailyActiveUsers += 70;
+        io.displayPromoteStatus();
+    }
+
+    private void recharge(State state) {
+        state.laptopBattery = 100;
+        state.teamMorale += 45;
+        io.displayRechargeStatus();
+    }
+
+    protected boolean isEndOfGame(State state) {
         if (state.laptopBattery <= 0) {
-            System.out.println("🪫: Your laptop died. You lose. 👎👎👎👎");
+            io.displayEndOfGameMessage(false, "🪫: Your laptop died.");
             return true;
         } else if (state.cash <= 0) {
-            System.out.println("💰: Your spent all of your money. You lose. 👎👎👎👎");
+            io.displayEndOfGameMessage(false, "💰: You spent all of your money.");
             return true;
         } else if (state.coffee <= 0) {
-            System.out.println("💀: Your team died of thirst. You lose. 👎👎👎👎");
+            io.displayEndOfGameMessage(false, "💀: Your team died of thirst.");
             return true;
         } else if (state.teamMorale <= 0) {
-            System.out.println("🏃: Your team quit. You lose. 👎👎👎👎");
+            io.displayEndOfGameMessage(false, "🏃: Your team quit.");
             return true;
         } else if (state.cityIndex >= State.CITIES.length - 1) {
             if (state.dailyActiveUsers < 50) {
-                System.out.println("📉: You arrived in San Francisco but didn't attract enough users. You lose. 👎👎👎👎");
+                io.displayEndOfGameMessage(false, "📉: Arrived in San Francisco but didn't attract enough users.");
                 return true;
             }
-            System.out.println("🎉: You arrived in San Francisco and nailed your Demo Day. You win. 👍👍👍👍");
+            io.displayEndOfGameMessage(true, "🎉: Arrived in San Francisco and nailed your Demo Day.");
             return true;
         }
         return false;
