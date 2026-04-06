@@ -55,6 +55,7 @@ public class GameController {
             switch (choice) {
                 case 1:
                     travel(state);
+                    triggerEvent(state);
                     break;
                 case 2:
                     work(state);
@@ -89,37 +90,40 @@ public class GameController {
         return stateSerializer.deserialize(json);
     }
 
-    private void travel(State state) throws IOException {
+    public void travel(State state) throws IOException {
         City currentCity = state.getCurrentCity();
         state.cityIndex++;
         state.coffee -= 2;
         state.cash -= 500;
         state.teamMorale -= 15;
         io.displayTravelStatus(currentCity, state.getCurrentCity());
-        Event event = gameEvents.getRandomEvent(new Random(), state);
-        io.displayEvent(event);
-        int eventChoice = io.getChoice(1, event.options().size());
-        event.selected(eventChoice);
     }
 
-    private void work(State state) {
+    public void work(State state) {
         state.coffee -= 4;
         state.laptopBattery -= 50;
         state.teamMorale -= 35;
         io.displayWorkStatus();
     }
 
-    private void promote(State state) {
+    public void promote(State state) {
         state.cash -= 2000;
         state.laptopBattery -= 40;
         state.dailyActiveUsers += 70;
         io.displayPromoteStatus();
     }
 
-    private void recharge(State state) {
+    public void recharge(State state) {
         state.laptopBattery = 100;
         state.teamMorale += 45;
         io.displayRechargeStatus();
+    }
+
+    private void triggerEvent(State state) throws IOException {
+        Event event = gameEvents.getRandomEvent(new Random(), state);
+        io.displayEvent(event);
+        int eventChoice = io.getChoice(1, event.options().size());
+        event.selected(eventChoice);
     }
 
     protected boolean isEndOfGame(State state) {
