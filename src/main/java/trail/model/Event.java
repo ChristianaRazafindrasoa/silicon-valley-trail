@@ -22,6 +22,9 @@ public class Event {
     }
 
     public void selected(int option) {
+        if (option <= 0 || option > options().size()) {
+            throw new IllegalArgumentException();
+        }
         updateStates.get(option - 1).run();
     }
 }

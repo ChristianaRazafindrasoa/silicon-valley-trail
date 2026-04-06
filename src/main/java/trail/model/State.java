@@ -48,7 +48,7 @@ public class State {
 
     public City getCurrentCity() {
         if (cityIndex >= CITIES.length) {
-            return null;
+            throw new IllegalStateException();
         }
         return CITIES[cityIndex];
     }

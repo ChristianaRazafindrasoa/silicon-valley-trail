@@ -13,12 +13,18 @@ import java.nio.file.Path;
 import java.util.Random;
 
 public class GameController {
-    private static final String FILE_PATH = "./state.json";
-    private final ConsoleIO io = new ConsoleIO();
-    private final GameEvents gameEvents = new GameEvents();
-    private StateSerializer stateSerializer = new StateSerializer();
+    private static final String STATE_FILE_PATH = "./state.json";
+    private static final int STARTING_COFFEE = 12;
+    private static final int STARTING_CASH = 5000;
+    private static final int STARTING_BATTERY = 100;
+    private static final int STARTING_USERS = 20;
+    private static final int STARTING_MORALE = 90;
 
-    public void run() throws IOException {
+    private static final ConsoleIO io = new ConsoleIO();
+    private static final GameEvents gameEvents = new GameEvents();
+    private static final StateSerializer stateSerializer = new StateSerializer();
+
+    public void run() throws GameException {
         boolean quit = false;
         while (!quit) {
             io.displayMainMenu();
@@ -39,14 +45,14 @@ public class GameController {
         }
     }
 
-     private void startNewGame() throws IOException {
-        State state = new State(12, 5000, 100, 90, 35);
+     private void startNewGame() throws GameException {
+        State state = new State(STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
         io.displayInstructions();
         io.enterToStart();
         runGameLoop(state);
     }
 
-     private void runGameLoop(State state) throws IOException {
+     private void runGameLoop(State state) throws GameException {
         boolean exitToMenu = false;
         while (!exitToMenu) {
             io.displayProgressBar(state);
@@ -78,19 +84,27 @@ public class GameController {
         }
     }
 
-    private void saveGame(State state) throws FileNotFoundException {
-        String json = stateSerializer.serialize(state);
-        try (PrintWriter writer = new PrintWriter(FILE_PATH)) {
-            writer.write(json);
+    private void saveGame(State state) throws GameException {
+        try {
+            String json = stateSerializer.serialize(state);
+            try (PrintWriter writer = new PrintWriter(STATE_FILE_PATH)) {
+                writer.write(json);
+            }
+        } catch (FileNotFoundException ex) {
+            throw new GameException("Failed to save game", ex);
         }
     }
 
-    private State loadGame() throws IOException {
-        String json = Files.readString(Path.of(FILE_PATH));
-        return stateSerializer.deserialize(json);
+    private State loadGame() throws GameException {
+        try {
+            String json = Files.readString(Path.of(STATE_FILE_PATH));
+            return stateSerializer.deserialize(json);
+        } catch (IOException ex) {
+            throw new GameException("Failed to load game", ex);
+        }
     }
 
-    public void travel(State state) throws IOException {
+    public void travel(State state) {
         City currentCity = state.getCurrentCity();
         state.cityIndex++;
         state.coffee -= 2;
@@ -119,7 +133,7 @@ public class GameController {
         io.displayRechargeStatus();
     }
 
-    private void triggerEvent(State state) throws IOException {
+    private void triggerEvent(State state) {
         Event event = gameEvents.getRandomEvent(new Random(), state);
         io.displayEvent(event);
         int eventChoice = io.getChoice(1, event.options().size());

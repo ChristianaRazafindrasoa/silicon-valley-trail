@@ -33,21 +33,21 @@ public class ConsoleIO {
     public void displayHeader(String message) {
         System.out.println();
         System.out.print("*".repeat(message.length()));
-        System.out.printf("%n%s%n", message);
+        System.out.printf("\nn%s\n", message);
         System.out.print("*".repeat(message.length()));
         System.out.println();
     }
 
     public void displayMainMenu() {
-        displayHeader("SILICON VALLEY TRAIL: MAIN MENU");
-        System.out.println("\n1. New Game");
+        displayHeader("SILICON VALLEY TRAIL: MAIN MENU\n");
+        System.out.println("1. New Game");
         System.out.println("2. Load Game");
         System.out.println("3. Quit");
     }
 
     public void displayInstructions() {
-        displayHeader("SILICON VALLEY TRAIL: INSTRUCTIONS");
-        System.out.println("\nYour startup team will go from San Jose to San Francisco for Demo Day.\n");
+        displayHeader("SILICON VALLEY TRAIL: INSTRUCTIONS\n");
+        System.out.println("Your startup team will go from San Jose to San Francisco for Demo Day.\n");
         System.out.println("Manage your resources wisely: ");
         System.out.println("💵 Cash - Spend it like you mean it");
         System.out.println("☕️ Coffee - Fuel the grind");
@@ -87,9 +87,10 @@ public class ConsoleIO {
 
     public void displayEvent(Event event) {
         System.out.println("\n");
-        System.out.println("*".repeat(event.getTitle().length() + 7));
+        String stars = "*".repeat(event.getTitle().length() + 7);
+        System.out.println(stars);
         System.out.printf("EVENT: %s \n", event.getTitle());
-        System.out.println("*".repeat(event.getTitle().length() + 7));
+        System.out.println(stars);
        for (String option : event.options()) {
            System.out.printf("\n%s", option);
        }
