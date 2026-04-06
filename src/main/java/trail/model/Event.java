@@ -1,4 +1,4 @@
-package trail.controller;
+package trail.model;
 
 import java.util.List;
 

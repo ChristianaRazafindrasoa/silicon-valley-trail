@@ -1,6 +1,6 @@
 package trail.view;
 
-import trail.controller.Event;
+import trail.model.Event;
 import trail.model.City;
 import trail.model.State;
 

@@ -1,6 +1,7 @@
 package trail.controller;
 
 import trail.model.City;
+import trail.model.Event;
 import trail.model.State;
 import trail.view.ConsoleIO;
 
@@ -38,14 +39,14 @@ public class GameController {
         }
     }
 
-     private void startNewGame() throws FileNotFoundException {
+     private void startNewGame() throws IOException {
         State state = new State(12, 5000, 100, 90, 35);
         io.displayInstructions();
         io.enterToStart();
         runGameLoop(state);
     }
 
-     private void runGameLoop(State state) throws FileNotFoundException {
+     private void runGameLoop(State state) throws IOException {
         boolean exitToMenu = false;
         while (!exitToMenu) {
             io.displayProgressBar(state);
@@ -88,7 +89,7 @@ public class GameController {
         return stateSerializer.deserialize(json);
     }
 
-    private void travel(State state) {
+    private void travel(State state) throws IOException {
         City currentCity = state.getCurrentCity();
         state.cityIndex++;
         state.coffee -= 2;
