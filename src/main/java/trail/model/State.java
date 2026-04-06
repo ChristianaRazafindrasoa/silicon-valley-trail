@@ -2,8 +2,6 @@ package trail.model;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.Objects;
-
 public class State {
     public static final City[] CITIES = new City[]{
             new City("San Jose", -121.8863, 37.3382),
@@ -24,19 +22,19 @@ public class State {
 //            new City("San Francisco", -122.4194, 37.7749)};
 
         @Expose
-        public int cityIndex;
+        private int cityIndex;
         @Expose
-        public int coffee;
+        private int coffee;
         @Expose
-        public int cash;
+        private int cash;
         @Expose
-        public int laptopBattery;
+        private int laptopBattery;
         @Expose
-        public int teamMorale;
+        private int teamMorale;
         @Expose
-        public int dailyActiveUsers;
+        private int dailyActiveUsers;
         @Expose
-        public int day = 1;
+        private int day = 1;
 
     public State(int coffee, int cash, int laptopBattery, int teamMorale, int dailyActiveUsers) {
         this.coffee = coffee;
@@ -53,6 +51,81 @@ public class State {
         return CITIES[cityIndex];
     }
 
+    public boolean hasNextCity() {
+        return cityIndex < CITIES.length - 1;
+    }
+
+    public void getNextCity() {
+        if (!hasNextCity()) {
+            throw new IllegalStateException();
+        }
+        cityIndex++;
+    }
+
+    public void adjustCoffee(int coffee) {
+        this.coffee = Math.max(0, this.coffee + coffee);
+    }
+
+    public void adjustMorale(int teamMorale) {
+        this.teamMorale = Math.min(100, this.teamMorale + teamMorale);
+    }
+
+    public void adjustBattery(int battery) {
+        this.laptopBattery = Math.min(100, this.laptopBattery + battery);
+    }
+
+    public void adjustCash(int cash) {
+        this.cash += cash;
+    }
+
+    public void adjustUsers(int newUsers) {
+        this.dailyActiveUsers += newUsers;
+    }
+
+    public boolean didLaptopDie() {
+        return laptopBattery <= 0;
+    }
+
+    public boolean didTeamQuit() {
+        return teamMorale <= 0;
+    }
+
+    public boolean didCoffeeRunOut() {
+        return coffee <= 0;
+    }
+
+    public boolean didCashRunOut() {
+        return cash <= 0;
+    }
+
+    public boolean notEnoughUsers() {
+        return dailyActiveUsers < 200;
+    }
+
+    public int getCoffee() {
+        return coffee;
+    }
+
+    public int getCash() {
+        return cash;
+    }
+
+    public int getBattery() {
+        return laptopBattery;
+    }
+
+    public int getMorale() {
+        return teamMorale;
+    }
+
+    public int getUsers() {
+        return dailyActiveUsers;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -64,10 +137,5 @@ public class State {
                 teamMorale == state.teamMorale &&
                 dailyActiveUsers == state.dailyActiveUsers &&
                 day == state.day;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cityIndex, coffee, cash, laptopBattery, teamMorale, dailyActiveUsers, day);
     }
 }

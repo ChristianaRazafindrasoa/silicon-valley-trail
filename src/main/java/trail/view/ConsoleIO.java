@@ -31,22 +31,21 @@ public class ConsoleIO {
     }
 
     public void displayHeader(String message) {
-        System.out.println();
         System.out.print("*".repeat(message.length()));
-        System.out.printf("\nn%s\n", message);
+        System.out.printf("\n%s\n", message);
         System.out.print("*".repeat(message.length()));
-        System.out.println();
+        System.out.println("\n");
     }
 
     public void displayMainMenu() {
-        displayHeader("SILICON VALLEY TRAIL: MAIN MENU\n");
+        displayHeader("SILICON VALLEY TRAIL: MAIN MENU");
         System.out.println("1. New Game");
         System.out.println("2. Load Game");
         System.out.println("3. Quit");
     }
 
     public void displayInstructions() {
-        displayHeader("SILICON VALLEY TRAIL: INSTRUCTIONS\n");
+        displayHeader("SILICON VALLEY TRAIL: INSTRUCTIONS");
         System.out.println("Your startup team will go from San Jose to San Francisco for Demo Day.\n");
         System.out.println("Manage your resources wisely: ");
         System.out.println("💵 Cash - Spend it like you mean it");
@@ -61,8 +60,8 @@ public class ConsoleIO {
         System.out.println("******************************************************");
         System.out.println("\nWhat will you do:\n");
         System.out.println("1. Travel to next location (-cash, -coffee, -morale)");
-        System.out.println("2. Work on features (-coffee, -battery)");
-        System.out.println("3. Promote product (-cash, +users, +morale)");
+        System.out.println("2. Work on features (-coffee, -battery, -morale)");
+        System.out.println("3. Promote product (+cash, -battery, +users)");
         System.out.println("4. Rest and recharge (+morale, +battery)");
         System.out.println("5. Go back to menu");
         System.out.println("******************************************************");
@@ -80,9 +79,10 @@ public class ConsoleIO {
 
     public void displayProgressBar(State state) {
         System.out.println("******************************************************");
-        System.out.printf("Day %d: | City: %s", state.day, state.getCurrentCity().getName());
+        System.out.printf("Day %d: | City: %s", state.getDay(), state.getCurrentCity().getName());
         System.out.printf("\n💵: $%d, ☕️: %d, 😊: %d/100, 📈: %d, 💻: %d/100\n",
-                state.cash, state.coffee, state.teamMorale, state.dailyActiveUsers, state.laptopBattery);
+                state.getCash(), state.getCoffee(), state.getMorale(),
+                state.getUsers(), state.getBattery());
     }
 
     public void displayEvent(Event event) {

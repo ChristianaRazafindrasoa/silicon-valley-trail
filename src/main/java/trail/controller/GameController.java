@@ -106,30 +106,30 @@ public class GameController {
 
     public void travel(State state) {
         City currentCity = state.getCurrentCity();
-        state.cityIndex++;
-        state.coffee -= 2;
-        state.cash -= 500;
-        state.teamMorale -= 15;
+        state.getNextCity();
+        state.adjustCoffee(-2);
+        state.adjustCash(-500);
+        state.adjustMorale(-15);
         io.displayTravelStatus(currentCity, state.getCurrentCity());
     }
 
     public void work(State state) {
-        state.coffee -= 4;
-        state.laptopBattery -= 50;
-        state.teamMorale -= 35;
+        state.adjustCoffee(-4);
+        state.adjustBattery(-50);
+        state.adjustMorale(-35);
         io.displayWorkStatus();
     }
 
     public void promote(State state) {
-        state.cash -= 2000;
-        state.laptopBattery -= 40;
-        state.dailyActiveUsers += 70;
+        state.adjustCash(+1000);
+        state.adjustBattery(-40);
+        state.adjustUsers(+55);
         io.displayPromoteStatus();
     }
 
     public void recharge(State state) {
-        state.laptopBattery = 100;
-        state.teamMorale += 45;
+        state.adjustBattery(+100);
+        state.adjustMorale(+45);
         io.displayRechargeStatus();
     }
 
@@ -141,20 +141,20 @@ public class GameController {
     }
 
     protected boolean isEndOfGame(State state) {
-        if (state.laptopBattery <= 0) {
+        if (state.didLaptopDie()) {
             io.displayEndOfGameMessage(false, "🪫: Your laptop died.");
             return true;
-        } else if (state.cash <= 0) {
+        } else if (state.didCashRunOut()) {
             io.displayEndOfGameMessage(false, "💰: You spent all of your money.");
             return true;
-        } else if (state.coffee <= 0) {
+        } else if (state.didCoffeeRunOut()) {
             io.displayEndOfGameMessage(false, "💀: Your team died of thirst.");
             return true;
-        } else if (state.teamMorale <= 0) {
+        } else if (state.didTeamQuit()) {
             io.displayEndOfGameMessage(false, "🏃: Your team quit.");
             return true;
-        } else if (state.cityIndex >= State.CITIES.length - 1) {
-            if (state.dailyActiveUsers < 50) {
+        } else if (!state.hasNextCity()) {
+            if (state.notEnoughUsers()) {
                 io.displayEndOfGameMessage(false, "📉: Arrived in San Francisco but didn't attract enough users.");
                 return true;
             }
