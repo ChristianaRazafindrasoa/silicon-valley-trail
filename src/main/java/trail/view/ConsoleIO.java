@@ -83,6 +83,7 @@ public class ConsoleIO {
         System.out.printf("\n💵: $%d, ☕️: %d, 😊: %d/100, 📈: %d, 💻: %d/100\n",
                 state.getCash(), state.getCoffee(), state.getMorale(),
                 state.getUsers(), state.getBattery());
+        System.out.printf("Progress to San Francisco: %d%%\n", state.getProgressToSf());
     }
 
     public void displayEvent(Event event) {

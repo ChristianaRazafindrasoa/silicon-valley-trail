@@ -3,8 +3,6 @@ package trail.controller;
 import org.junit.jupiter.api.Test;
 import trail.model.State;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameControllerTest {

@@ -3,23 +3,23 @@ package trail.model;
 import com.google.gson.annotations.Expose;
 
 public class State {
-    public static final City[] CITIES = new City[]{
-            new City("San Jose", -121.8863, 37.3382),
-            new City("Mountain View", -122.0838, 37.3861),
-            new City("San Mateo", -122.3255, 37.5630),
-            new City("San Francisco", -122.4194, 37.7749)};
-    //    public static final City[] CITIES = new City[]{
+//    public static final City[] CITIES = new City[]{
 //            new City("San Jose", -121.8863, 37.3382),
-//            new City("Santa Clara", -121.9552, 37.3541),
-//            new City("Sunnyvale", -122.0363, 37.3688),
 //            new City("Mountain View", -122.0838, 37.3861),
-//            new City("Palo Alto", -122.1430, 37.4419),
-//            new City("Redwood City", -122.2364, 37.4852),
 //            new City("San Mateo", -122.3255, 37.5630),
-//            new City("Millbrae", -122.3872, 37.5985),
-//            new City("South San Francisco", -122.4194, 37.6547),
-//            new City("Daly City", -122.4702, 37.6879),
 //            new City("San Francisco", -122.4194, 37.7749)};
+    public static final City[] CITIES = new City[]{
+        new City("San Jose", -121.8863, 37.3382),
+        new City("Santa Clara", -121.9552, 37.3541),
+        new City("Sunnyvale", -122.0363, 37.3688),
+        new City("Mountain View", -122.0838, 37.3861),
+        new City("Palo Alto", -122.1430, 37.4419),
+        new City("Redwood City", -122.2364, 37.4852),
+        new City("San Mateo", -122.3255, 37.5630),
+        new City("Millbrae", -122.3872, 37.5985),
+        new City("South San Francisco", -122.4194, 37.6547),
+        new City("Daly City", -122.4702, 37.6879),
+        new City("San Francisco", -122.4194, 37.7749)};
 
         @Expose
         private int cityIndex;
@@ -62,6 +62,15 @@ public class State {
         cityIndex++;
     }
 
+    public int getProgressToSf() {
+        City first = CITIES[0];
+        City current = getCurrentCity();
+        City last = CITIES[CITIES.length - 1];
+        double distanceTravelled = current.getDistance(first.getLatitude(), first.getLongitude());
+        double fullDistance = first.getDistance(last.getLatitude(), last.getLongitude());
+        return (int) (distanceTravelled / fullDistance * 100);
+    }
+
     public void adjustCoffee(int coffee) {
         this.coffee = Math.max(0, this.coffee + coffee);
     }
@@ -102,29 +111,12 @@ public class State {
         return dailyActiveUsers < 200;
     }
 
-    public int getCoffee() {
-        return coffee;
-    }
-
-    public int getCash() {
-        return cash;
-    }
-
-    public int getBattery() {
-        return laptopBattery;
-    }
-
-    public int getMorale() {
-        return teamMorale;
-    }
-
-    public int getUsers() {
-        return dailyActiveUsers;
-    }
-
-    public int getDay() {
-        return day;
-    }
+    public int getCoffee() { return coffee; }
+    public int getCash() { return cash;}
+    public int getBattery() { return laptopBattery; }
+    public int getMorale() { return teamMorale; }
+    public int getUsers() { return dailyActiveUsers; }
+    public int getDay() { return day; }
 
     @Override
     public boolean equals(Object o) {
