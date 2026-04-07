@@ -26,7 +26,7 @@ public class GameController {
     private static final MapboxApiImpl mapbox = new MapboxApiImpl(
             HttpClient.newHttpClient(), getEnvVariable("MAPBOX_SECRET_KEY"));
     private static final GameEvents gameEvents = new GameEvents(mapbox);
-    private static final StateSerializer stateSerializer = new StateSerializer();
+    private static final StateSerializer stateSerializer = new StateSerializer(STATE_FILE_PATH);
 
     public void run() {
         boolean quit = false;
@@ -90,26 +90,6 @@ public class GameController {
         }
     }
 
-    private void saveGame(State state) {
-        try {
-            String json = stateSerializer.serialize(state);
-            try (PrintWriter writer = new PrintWriter(STATE_FILE_PATH)) {
-                writer.write(json);
-            }
-        } catch (FileNotFoundException ex) {
-            throw new IllegalStateException("Failed to save game", ex);
-        }
-    }
-
-    private State loadGame() {
-        try {
-            String json = Files.readString(Path.of(STATE_FILE_PATH));
-            return stateSerializer.deserialize(json);
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load game", ex);
-        }
-    }
-
     public void travel(State state) {
         City currentCity = state.getCurrentCity();
         state.getNextCity();
@@ -160,16 +140,22 @@ public class GameController {
             io.displayEndOfGameMessage(false, "🏃: Your team quit.");
             return true;
         } else if (!state.hasNextCity()) {
-            if (state.notEnoughUsers()) {
-                io.displayEndOfGameMessage(false,
-                        "📉: Arrived in San Francisco but didn't attract enough users.");
-                return true;
-            }
-            io.displayEndOfGameMessage(true,
-                    "🎉: Arrived in San Francisco and nailed your Demo Day.");
+            boolean success = !state.notEnoughUsers();
+            String message = success
+                    ? "🎉: Arrived in San Francisco and nailed your Demo Day."
+                    : "📉: Arrived in San Francisco but didn't attract enough users.";
+            io.displayEndOfGameMessage(success, message);
             return true;
         }
         return false;
+    }
+
+    private void saveGame(State state) {
+        stateSerializer.serialize(state);
+    }
+
+    private State loadGame() {
+        return stateSerializer.deserialize();
     }
 
     private static String getEnvVariable(String key) {
