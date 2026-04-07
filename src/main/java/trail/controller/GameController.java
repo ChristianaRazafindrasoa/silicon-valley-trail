@@ -8,12 +8,14 @@ import trail.view.ConsoleIO;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 
 public class GameController {
     private static final String STATE_FILE_PATH = "./state.json";
+    private static final String ENV_FILE_PATH = ".env";
     private static final int STARTING_COFFEE = 12;
     private static final int STARTING_CASH = 5000;
     private static final int STARTING_BATTERY = 100;
@@ -21,7 +23,9 @@ public class GameController {
     private static final int STARTING_MORALE = 90;
 
     private static final ConsoleIO io = new ConsoleIO();
-    private static final GameEvents gameEvents = new GameEvents();
+    private static final MapboxApiImpl mapbox = new MapboxApiImpl(
+            HttpClient.newHttpClient(), getEnvVariable("MAPBOX_SECRET_KEY"));
+    private static final GameEvents gameEvents = new GameEvents(mapbox);
     private static final StateSerializer stateSerializer = new StateSerializer();
 
     public void run() throws GameException {
@@ -46,7 +50,8 @@ public class GameController {
     }
 
      private void startNewGame() throws GameException {
-        State state = new State(STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
+        State state = new State(
+                STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
         io.displayInstructions();
         io.enterToStart();
         runGameLoop(state);
@@ -155,12 +160,29 @@ public class GameController {
             return true;
         } else if (!state.hasNextCity()) {
             if (state.notEnoughUsers()) {
-                io.displayEndOfGameMessage(false, "📉: Arrived in San Francisco but didn't attract enough users.");
+                io.displayEndOfGameMessage(false,
+                        "📉: Arrived in San Francisco but didn't attract enough users.");
                 return true;
             }
-            io.displayEndOfGameMessage(true, "🎉: Arrived in San Francisco and nailed your Demo Day.");
+            io.displayEndOfGameMessage(true,
+                    "🎉: Arrived in San Francisco and nailed your Demo Day.");
             return true;
         }
         return false;
+    }
+
+    private static String getEnvVariable(String key) {
+        try {
+            String contents = Files.readString(Path.of(ENV_FILE_PATH));
+            for (String line : contents.split("\n")) {
+                String[] parts = line.split("=");
+                if (parts[0].equalsIgnoreCase(key)) {
+                    return parts[1];
+                }
+            }
+        } catch (IOException _) {
+
+        }
+        return null;
     }
 }
