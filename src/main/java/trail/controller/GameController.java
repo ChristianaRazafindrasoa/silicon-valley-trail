@@ -82,6 +82,7 @@ public class GameController {
                     exitToMenu = true;
                     break;
             }
+            state.getNextDay();
             if (isEndOfGame(state)) {
                 exitToMenu = true;
                 io.enterToMenu();

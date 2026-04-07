@@ -66,9 +66,15 @@ public class State {
         City first = CITIES[0];
         City current = getCurrentCity();
         City last = CITIES[CITIES.length - 1];
-        double distanceTravelled = current.getDistance(first.getLatitude(), first.getLongitude());
-        double fullDistance = first.getDistance(last.getLatitude(), last.getLongitude());
+        double distanceTravelled = current.getDistance(
+                first.getLatitude(), first.getLongitude());
+        double fullDistance = first.getDistance(
+                last.getLatitude(), last.getLongitude());
         return (int) (distanceTravelled / fullDistance * 100);
+    }
+
+    public void getNextDay() {
+        day++;
     }
 
     public void adjustCoffee(int coffee) {

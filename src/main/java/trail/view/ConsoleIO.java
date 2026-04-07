@@ -43,7 +43,7 @@ public class ConsoleIO {
                             1. New Game
                             2. Load Game
                             3. Quit
-                            \n""");
+                           """);
     }
 
     public void displayInstructions() {

@@ -66,6 +66,7 @@ public class GameEvents {
                     index++, entry.name(), distance);
             options.add(option);
         }
+        options.add(String.format("%d. No, thanks.)", index));
         return new Event("Coffee shops found nearby. Do you want to stop for coffee?",
                 options,
                 List.of(
