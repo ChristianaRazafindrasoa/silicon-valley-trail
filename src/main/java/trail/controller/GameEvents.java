@@ -131,7 +131,7 @@ public class GameEvents {
                         TECH_FAILURES[techFailuresIndex]),
                 List.of(
                         "1. Yes, let's fix it immediately! (-laptopBattery)",
-                        "2. Later, let's send out emails. (-teamMorale, -laptopBattery)",
+                        "2. Later, let's procrastinate. (-teamMorale)",
                         "3. No, let's ignore it for now. (-users)"),
                 List.of(
                         () -> {state.adjustBattery(-30);},

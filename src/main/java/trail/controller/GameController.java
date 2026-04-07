@@ -16,7 +16,7 @@ import java.util.Random;
 public class GameController {
     private static final String STATE_FILE_PATH = "./state.json";
     private static final String ENV_FILE_PATH = ".env";
-    private static final int STARTING_COFFEE = 12;
+    private static final int STARTING_COFFEE = 8;
     private static final int STARTING_CASH = 5000;
     private static final int STARTING_BATTERY = 100;
     private static final int STARTING_USERS = 20;
@@ -82,7 +82,7 @@ public class GameController {
                     exitToMenu = true;
                     break;
             }
-            state.getNextDay();
+            checkEndOfDay(state);
             if (isEndOfGame(state)) {
                 exitToMenu = true;
                 io.enterToMenu();
@@ -126,15 +126,23 @@ public class GameController {
         event.selected(eventChoice);
     }
 
+    private void checkEndOfDay(State state) {
+        state.getNextDay();
+        if (state.didCoffeeRunOut()) {
+            if (state.getNextConsecutiveDays() >= 2) {
+                io.displayWarning(state);
+            }
+        } else {
+            state.resetConsecutiveDays();
+        }
+    }
+
     protected boolean isEndOfGame(State state) {
         if (state.didLaptopDie()) {
             io.displayEndOfGameMessage(false, "🪫: Your laptop died.");
             return true;
         } else if (state.didCashRunOut()) {
             io.displayEndOfGameMessage(false, "💰: You spent all of your money.");
-            return true;
-        } else if (state.didCoffeeRunOut()) {
-            io.displayEndOfGameMessage(false, "💀: Your team died of thirst.");
             return true;
         } else if (state.didTeamQuit()) {
             io.displayEndOfGameMessage(false, "🏃: Your team quit.");

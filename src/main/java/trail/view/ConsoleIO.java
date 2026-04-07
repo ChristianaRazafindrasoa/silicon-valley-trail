@@ -68,7 +68,7 @@ public class ConsoleIO {
                          2. Work on features (-coffee, -battery, -morale)
                          3. Promote product (+cash, -battery, +users)
                          4. Rest and recharge (+morale, +battery)
-                         5. Go back to menu
+                         5. Save and exit to menu
                          
                          ******************************************************
                          """);
@@ -98,10 +98,20 @@ public class ConsoleIO {
         System.out.println(stars);
         System.out.printf("EVENT: %s \n", event.getTitle());
         System.out.println(stars);
-       for (String option : event.options()) {
+        for (String option : event.options()) {
            System.out.printf("\n%s", option);
-       }
+        }
         System.out.println("\n");
+    }
+
+    public void displayWarning(State state) {
+        String text = "WARNING: ";
+        if (state.didCoffeeRunOut()) {
+            text += "You ran out of coffee for more than two consecutive days, " +
+                    "team morale will decline 2x\n";
+        }
+        String stars = STAR.repeat(text.length()) + "\n";
+        print(stars +  text + stars);
     }
 
     public void displayEndOfGameMessage(boolean success, String message) {

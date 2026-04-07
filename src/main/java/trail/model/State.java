@@ -3,11 +3,6 @@ package trail.model;
 import com.google.gson.annotations.Expose;
 
 public class State {
-//    public static final City[] CITIES = new City[]{
-//            new City("San Jose", -121.8863, 37.3382),
-//            new City("Mountain View", -122.0838, 37.3861),
-//            new City("San Mateo", -122.3255, 37.5630),
-//            new City("San Francisco", -122.4194, 37.7749)};
     public static final City[] CITIES = new City[]{
         new City("San Jose", -121.8863, 37.3382),
         new City("Santa Clara", -121.9552, 37.3541),
@@ -18,7 +13,6 @@ public class State {
         new City("San Mateo", -122.3255, 37.5630),
         new City("Millbrae", -122.3872, 37.5985),
         new City("South San Francisco", -122.4194, 37.6547),
-        new City("Daly City", -122.4702, 37.6879),
         new City("San Francisco", -122.4194, 37.7749)};
 
         @Expose
@@ -35,6 +29,8 @@ public class State {
         private int dailyActiveUsers;
         @Expose
         private int day = 1;
+        @Expose
+        private int consecutiveDays = 0;
 
     public State(int coffee, int cash, int laptopBattery, int teamMorale, int dailyActiveUsers) {
         this.coffee = coffee;
@@ -77,10 +73,15 @@ public class State {
         day++;
     }
 
+    public int getNextConsecutiveDays() { return consecutiveDays++; }
+
     public void adjustCoffee(int coffee) {
         this.coffee = Math.max(0, this.coffee + coffee);
     }
     public void adjustMorale(int teamMorale) {
+        if (teamMorale < 0 && consecutiveDays >= 2) {
+            teamMorale *= 2;
+        }
         this.teamMorale = Math.min(100, this.teamMorale + teamMorale);
     }
     public void adjustBattery(int battery) {
@@ -115,6 +116,8 @@ public class State {
     public int getMorale() { return teamMorale; }
     public int getUsers() { return dailyActiveUsers; }
     public int getDay() { return day; }
+
+    public void resetConsecutiveDays() { consecutiveDays = 0; }
 
     @Override
     public boolean equals(Object o) {
