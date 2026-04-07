@@ -158,7 +158,7 @@ public class GameController {
         return stateSerializer.deserialize();
     }
 
-    private static String getEnvVariable(String key) {
+    protected static String getEnvVariable(String key) {
         try {
             String contents = Files.readString(Path.of(ENV_FILE_PATH));
             for (String line : contents.split("\n")) {

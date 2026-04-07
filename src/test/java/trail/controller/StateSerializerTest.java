@@ -18,14 +18,16 @@ class StateSerializerTest {
     @Test
     void shouldNotSerializeInvalidPath() {
         StateSerializer stateSerializer = new StateSerializer("./invalid/state-test.json");
-        State state = new State(12, 3500, 0, 65, 76);
+        State state = new State(
+                12, 3500, 0, 65, 76);
         assertThrows(IllegalStateException.class, () -> stateSerializer.serialize(state));
     }
 
     @Test
     void shouldNotDeserializeInvalidPath() {
         StateSerializer stateSerializer = new StateSerializer("./state-test.json");
-        State state = new State(12, 3500, 0, 65, 76);
+        State state = new State(
+                12, 3500, 0, 65, 76);
         stateSerializer.serialize(state);
         stateSerializer = new StateSerializer("./invalid/state-test.json");
         assertThrows(IllegalStateException.class, stateSerializer::deserialize);

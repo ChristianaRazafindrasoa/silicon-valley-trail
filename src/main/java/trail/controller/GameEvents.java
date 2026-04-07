@@ -39,7 +39,7 @@ public class GameEvents {
         return event;
     }
 
-    private Event coffeeShopEvent(State state) {
+    protected Event coffeeShopEvent(State state) {
         Event event = null;
         City currentCity = state.getCurrentCity();
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
@@ -53,7 +53,7 @@ public class GameEvents {
         return event;
     }
 
-    private Event buildCoffeeShopEvent(State state, MapboxApi.MapboxApiSearchResponse response) {
+    protected Event buildCoffeeShopEvent(State state, MapboxApi.MapboxApiSearchResponse response) {
         if (response.entries() == null || response.entries().isEmpty()) {
             return fallbackCoffeeShopEvent(state);
         }
@@ -90,7 +90,7 @@ public class GameEvents {
         return event;
     }
 
-    private Event celebrityEncounterEvent(State state) {
+    protected Event celebrityEncounterEvent(State state) {
         Event event = new Event(
                 String.format("%s is at the train station. Do you want to pitch your product?",
                         CELEBRITY_NAMES[celebrityNameIndex]),
@@ -106,7 +106,7 @@ public class GameEvents {
         return event;
     }
 
-    private Event freeTicketEvent(State state) {
+    protected Event freeTicketEvent(State state) {
         Event event = new Event(
                 String.format("You won free passes for %s. Do you want to go?",
                         CONFERENCE_TITLES[conferenceTitleIndex]),

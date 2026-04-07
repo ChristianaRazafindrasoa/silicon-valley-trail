@@ -23,13 +23,11 @@ public class MapboxApiImpl implements MapboxApi {
     }
 
     @Override
-    public MapboxApiSearchResponse search(MapboxApiSearchRequest request)
-            throws IOException, InterruptedException {
+    public MapboxApiSearchResponse search(MapboxApiSearchRequest request) {
         MapboxApiSearchResponse response = new MapboxApiSearchResponse(new ArrayList<>());
-        if (accessToken == null) {
+        if (accessToken == null || accessToken.isBlank()) {
             return response;
         }
-
         String url = String.format(
                 "https://api.mapbox.com/search/searchbox/v1/forward?q=%s" +
                         "&proximity=%s,%s&limit=3&access_token=%s",
@@ -41,10 +39,14 @@ public class MapboxApiImpl implements MapboxApi {
                 .uri(URI.create(url))
                 .GET()
                 .build();
-        HttpResponse<String> httpResponse = client.send(
-                httpRequest, HttpResponse.BodyHandlers.ofString());
-        if (httpResponse.statusCode() >= 200 && httpResponse.statusCode() <=299) {
-            response = parse(httpResponse.body());
+        try {
+            HttpResponse<String> httpResponse = client.send(
+                    httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (httpResponse.statusCode() >= 200 && httpResponse.statusCode() <=299) {
+                response = parse(httpResponse.body());
+            }
+        } catch (IOException | InterruptedException _) {
+
         }
         return response;
     }
