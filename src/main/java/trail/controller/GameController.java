@@ -28,7 +28,7 @@ public class GameController {
     private static final GameEvents gameEvents = new GameEvents(mapbox);
     private static final StateSerializer stateSerializer = new StateSerializer();
 
-    public void run() throws GameException {
+    public void run() {
         boolean quit = false;
         while (!quit) {
             io.displayMainMenu();
@@ -49,7 +49,7 @@ public class GameController {
         }
     }
 
-     private void startNewGame() throws GameException {
+     private void startNewGame() {
         State state = new State(
                 STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
         io.displayInstructions();
@@ -57,7 +57,7 @@ public class GameController {
         runGameLoop(state);
     }
 
-     private void runGameLoop(State state) throws GameException {
+     private void runGameLoop(State state) {
         boolean exitToMenu = false;
         while (!exitToMenu) {
             io.displayProgressBar(state);
@@ -89,23 +89,23 @@ public class GameController {
         }
     }
 
-    private void saveGame(State state) throws GameException {
+    private void saveGame(State state) {
         try {
             String json = stateSerializer.serialize(state);
             try (PrintWriter writer = new PrintWriter(STATE_FILE_PATH)) {
                 writer.write(json);
             }
         } catch (FileNotFoundException ex) {
-            throw new GameException("Failed to save game", ex);
+            throw new IllegalStateException("Failed to save game", ex);
         }
     }
 
-    private State loadGame() throws GameException {
+    private State loadGame() {
         try {
             String json = Files.readString(Path.of(STATE_FILE_PATH));
             return stateSerializer.deserialize(json);
         } catch (IOException ex) {
-            throw new GameException("Failed to load game", ex);
+            throw new IllegalStateException("Failed to load game", ex);
         }
     }
 
