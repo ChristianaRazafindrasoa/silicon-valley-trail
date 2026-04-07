@@ -80,39 +80,31 @@ public class State {
     public void adjustCoffee(int coffee) {
         this.coffee = Math.max(0, this.coffee + coffee);
     }
-
     public void adjustMorale(int teamMorale) {
         this.teamMorale = Math.min(100, this.teamMorale + teamMorale);
     }
-
     public void adjustBattery(int battery) {
         this.laptopBattery = Math.min(100, this.laptopBattery + battery);
     }
-
     public void adjustCash(int cash) {
-        this.cash += cash;
+        this.cash = Math.max(0, this.cash + cash);
     }
-
     public void adjustUsers(int newUsers) {
-        this.dailyActiveUsers += newUsers;
+        dailyActiveUsers = Math.max(0, dailyActiveUsers + newUsers);
     }
 
     public boolean didLaptopDie() {
         return laptopBattery <= 0;
     }
-
     public boolean didTeamQuit() {
         return teamMorale <= 0;
     }
-
     public boolean didCoffeeRunOut() {
         return coffee <= 0;
     }
-
     public boolean didCashRunOut() {
         return cash <= 0;
     }
-
     public boolean notEnoughUsers() {
         return dailyActiveUsers < 200;
     }

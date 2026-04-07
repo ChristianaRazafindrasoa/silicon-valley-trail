@@ -11,16 +11,19 @@ import java.util.Random;
 
 public class GameEvents {
     private static final String[] COFFEE_SHOPS = new String[]{
-            "Starbucks", "Philz Coffee", "Voyager Coffee", "Blue Bottle"};
+            "Starbucks", "Dunkin'", "Dutch Bros"};
     private static final String[] CELEBRITY_NAMES = new String[]{
-            "Ryan Roslansky", "Tim Cook", "Sam Altman", "Jeff Bezos"};
+            "Ryan Roslansky", "Tim Cook", "Jeff Bezos"};
     private static final String[] CONFERENCE_TITLES = new String[]{
-            "Stanford TreeHacks", "GitHub Universe", "Nvidia GTC", "TECHSPO"};
+            "GitHub Universe", "Stanford TreeHacks", "Nvidia GTC"};
+    private static final String[] TECH_FAILURES = new String[]{
+            "major bug", "server crash", "data leaked"};
 
     private final MapboxApi mapbox;
     private int coffeeShopIndex = 0;
     private int celebrityNameIndex = 0;
     private int conferenceTitleIndex = 0;
+    private int techFailuresIndex = 0;
 
     public GameEvents(MapboxApi mapbox) {
         this.mapbox = mapbox;
@@ -28,13 +31,15 @@ public class GameEvents {
 
     public Event getRandomEvent(Random random, State state) {
         Event event = null;
-        int rand = random.nextInt(5);
+        int rand = random.nextInt(7);
         if (rand < 3) {
             event = coffeeShopEvent(state);
         } else if (rand == 3) {
             event = celebrityEncounterEvent(state);
-        } else {
+        } else if (rand == 4) {
             event = freeTicketEvent(state);
+        } else {
+            event = techFailureEvent(state);
         }
         return event;
     }
@@ -66,7 +71,7 @@ public class GameEvents {
                     index++, entry.name(), distance);
             options.add(option);
         }
-        options.add(String.format("%d. No, thanks.)", index));
+        options.add(String.format("%d. No, thanks.", index));
         return new Event("Coffee shops found nearby. Do you want to stop for coffee?",
                 options,
                 List.of(
@@ -117,6 +122,22 @@ public class GameEvents {
                         () -> {state.adjustBattery(-15); state.adjustMorale(+20);},
                         () -> {state.adjustMorale(-10);}));
         conferenceTitleIndex = (conferenceTitleIndex + 1) % CONFERENCE_TITLES.length;
+        return event;
+    }
+
+    protected Event techFailureEvent(State state) {
+        Event event = new Event(
+                String.format("A %s has happened. Do you want to fix it?",
+                        TECH_FAILURES[techFailuresIndex]),
+                List.of(
+                        "1. Yes, let's fix it immediately! (-laptopBattery)",
+                        "2. Later, let's send out emails. (-teamMorale, -laptopBattery)",
+                        "3. No, let's ignore it for now. (-users)"),
+                List.of(
+                        () -> {state.adjustBattery(-30);},
+                        () -> {state.adjustBattery(-10); state.adjustMorale(-20);},
+                        () -> {state.adjustUsers(-15);}));
+        techFailuresIndex = (techFailuresIndex + 1) % TECH_FAILURES.length;
         return event;
     }
 }

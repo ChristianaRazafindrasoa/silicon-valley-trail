@@ -105,7 +105,7 @@ public class ConsoleIO {
     }
 
     public void displayEndOfGameMessage(boolean success, String message) {
-        String text = "END OF THE GAME:";
+        String text = "END OF THE GAME ";
         if (!success) {
             text += message + " You lose. 👎👎👎👎\n";
         } else {

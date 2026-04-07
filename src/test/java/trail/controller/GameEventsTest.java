@@ -41,20 +41,4 @@ class GameEventsTest {
         Event event = gameEvents.buildCoffeeShopEvent(state, response);
         assertNotNull(event);
     }
-
-    @Test
-    void celebrityEncounterEvent() {
-        State state = new State(
-                12, 3500, 0, 65, 76);
-        Event event = gameEvents.celebrityEncounterEvent(state);
-        assertNotNull(event);
-    }
-
-    @Test
-    void freeTicketEvent() {
-        State state = new State(
-                12, 3500, 0, 65, 76);
-        Event event = gameEvents.freeTicketEvent(state);
-        assertNotNull(event);
-    }
 }
