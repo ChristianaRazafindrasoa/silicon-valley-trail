@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// Since this class currently does more than just serialize
+// I suggest renaming this to LoadOrSaveState or PersistState
+// and then updating the functions to save() and load().
 public class StateSerializer {
     private final String filePath;
 
