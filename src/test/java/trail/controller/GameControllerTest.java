@@ -19,8 +19,8 @@ class GameControllerTest {
         ConsoleIO io = new ConsoleIO();
         MapboxApi mapbox = request -> null;
         GameEvents gameEvents = new GameEvents(mapbox, new Random());
-        PersistState persistState = new PersistState(GameConstants.STATE_FILE_PATH);
-        this.gameController = new GameController(io, gameEvents, persistState);
+        GameLoader gameLoader = new GameLoader(GameConstants.STATE_FILE_PATH);
+        this.gameController = new GameController(io, gameEvents, gameLoader);
     }
 
     @Test

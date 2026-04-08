@@ -18,9 +18,9 @@ public class Main {
         Random random = new Random();
         MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), mapboxKey);
         GameEvents gameEvents = new GameEvents(mapbox, random);
-        PersistState persistState = new PersistState(GameConstants.STATE_FILE_PATH);
+        GameLoader gameLoader = new GameLoader(GameConstants.STATE_FILE_PATH);
 
-        GameController gameController = new GameController(io, gameEvents, persistState);
+        GameController gameController = new GameController(io, gameEvents, gameLoader);
         gameController.run();
     }
 

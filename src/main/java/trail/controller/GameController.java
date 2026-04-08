@@ -8,15 +8,15 @@ import trail.view.ConsoleIO;
 public class GameController {
     private final ConsoleIO io;
     private final GameEvents gameEvents;
-    private final PersistState persistState;
+    private final GameLoader gameLoader;
 
     public GameController(
             ConsoleIO io,
             GameEvents gameEvents,
-            PersistState persistState) {
+            GameLoader gameLoader) {
         this.io = io;
         this.gameEvents = gameEvents;
-        this.persistState = persistState;
+        this.gameLoader = gameLoader;
     }
 
     public void run() {
@@ -130,11 +130,11 @@ public class GameController {
     }
 
     private void saveGame(State state) {
-        persistState.save(state);
+        gameLoader.save(state);
     }
 
     private State loadGame() {
-        State state = persistState.load();
+        State state = gameLoader.load();
         if (state == null) {
             return GameConstants.STARTING_STATE;
         }

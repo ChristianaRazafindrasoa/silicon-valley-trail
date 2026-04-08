@@ -10,23 +10,19 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-// Since this class currently does more than just serialize
-// I suggest renaming this to LoadOrSaveState or PersistState
-// and then updating the functions to save() and load().
-public class StateSerializer {
+public class GameLoader {
     private final String filePath;
-
-    public StateSerializer(String filePath) {
-        this.filePath = filePath;
-    }
-
     private final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-    public void serialize(State state) {
+    public GameLoader(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void save(State state) {
         try {
-            String json = gson.toJson(state);
+            String json = serialize(state);
             try (PrintWriter writer = new PrintWriter(filePath)) {
                 writer.write(json);
             }
@@ -35,12 +31,20 @@ public class StateSerializer {
         }
     }
 
-    public State deserialize() {
+    public State load() {
         try {
             String json = Files.readString(Path.of(filePath));
-            return gson.fromJson(json, State.class);
+            return deserialize(json);
         } catch (IOException ex) {
             throw new IllegalStateException("Failed to load game", ex);
         }
+    }
+
+    private String serialize(State state) {
+        return gson.toJson(state);
+    }
+
+    private State deserialize(String json) {
+        return gson.fromJson(json, State.class);
     }
 }
