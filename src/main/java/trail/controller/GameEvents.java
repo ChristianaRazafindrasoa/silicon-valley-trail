@@ -57,6 +57,8 @@ public class GameEvents {
             return fallbackCoffeeShopEvent(state);
         }
         List<String> options = new ArrayList<>(response.entries().size() + 1);
+        List<Runnable> runnables = new ArrayList<>(response.entries().size() + 1);
+        Runnable runnable = () -> {state.adjustCoffee(+4); state.adjustCash(-300);};
         int index = 1;
         for (MapboxApi.MapboxApiSearchEntry entry : response.entries()) {
             double distance = state.getCurrentCity()
@@ -64,15 +66,12 @@ public class GameEvents {
             String option = String.format("%d. %s %.2f miles away (+coffee, -cash)",
                     index++, entry.name(), distance);
             options.add(option);
+            runnables.add(runnable);
         }
         options.add(String.format("%d. No, thanks.", index));
+        runnables.add(() -> {});
         return new Event("Coffee shops found nearby. Do you want to stop for coffee?",
-                options,
-                List.of(
-                        () -> {state.adjustCoffee(+6); state.adjustCash(-100);},
-                        () -> {state.adjustCoffee(+6); state.adjustCash(-250);},
-                        () -> {state.adjustCoffee(+6); state.adjustCash(-200);},
-                        () -> {}));
+                options, runnables);
     }
 
     Event fallbackCoffeeShopEvent(State state) {
