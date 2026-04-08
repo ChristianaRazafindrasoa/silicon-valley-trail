@@ -7,7 +7,7 @@ import trail.model.State;
 import java.util.Scanner;
 
 public class ConsoleIO {
-    private final String STAR = "*";
+    private static final String STAR = "*";
     private final Scanner console = new Scanner(System.in);
 
     public int getChoice(int min, int max) {
@@ -39,11 +39,11 @@ public class ConsoleIO {
 
     public void displayMainMenu() {
         displayHeader("SILICON VALLEY TRAIL: MAIN MENU");
-        System.out.println("""
-                            1. New Game
-                            2. Load Game
-                            3. Quit
-                            """);
+        print("""
+                1. New Game
+                2. Load Game
+                3. Quit
+                """);
     }
 
     public void displayInstructions() {
@@ -88,7 +88,7 @@ public class ConsoleIO {
 
     public void displayProgressBar(State state) {
         print("******************************************************");
-        System.out.printf("Day %d: | City: %s", state.getDay(), state.getCurrentCity().getName());
+        System.out.printf("Day %d: | City: %s", state.getDay(), state.getCurrentCity().name());
         System.out.printf("\n💵: $%d, ☕️: %d, 😊: %d/100, 📈: %d, 💻: %d/100\n",
                 state.getCash(), state.getCoffee(), state.getMorale(),
                 state.getUsers(), state.getBattery());
@@ -96,9 +96,9 @@ public class ConsoleIO {
     }
 
     public void displayEvent(Event event) {
-        String stars = "*".repeat(event.getTitle().length() + 7);
+        String stars = "*".repeat(event.title().length() + 7);
         print(stars);
-        System.out.printf("EVENT: %s \n", event.getTitle());
+        System.out.printf("EVENT: %s \n", event.title());
         print(stars);
         for (String option : event.options()) {
            System.out.printf("\n%s", option);
@@ -106,7 +106,7 @@ public class ConsoleIO {
         print("\n");
     }
 
-    public void displayWarning(State state) {
+    public void displayConsecutiveDaysWithoutCoffeeWarning(State state) {
         String text = "WARNING: ";
         if (state.didCoffeeRunOut()) {
             text += "You ran out of coffee for more than two consecutive days, " +
@@ -146,26 +146,42 @@ public class ConsoleIO {
     }
 
     public void displayTravelStatus(City current, City next) {
-        String text = String.format("\n🚝Your team hops on the Caltrain, leaving %s...🚝\n" +
-                "\n📍Arrived at %s station📍\n", current.getName(), next.getName());
+        String text = String.format("""
+                
+                🚝Your team hops on the Caltrain, leaving %s...🚝
+                
+                📍Arrived at %s station📍
+                """, current.name(), next.name());
         print(text);
     }
 
     public void displayWorkStatus() {
-        String text = "\n⌨️Your team is working on cool features... ⌨️️\n" +
-                "\n🫩That session drained your team and battery🫩️️\n";
+        String text = """
+                
+                ⌨️Your team is working on cool features... ⌨️️
+                
+                🫩That session drained your team and battery🫩️️
+                """;
         print(text);
     }
 
     public void displayPromoteStatus() {
-        String text = "\n📢Your team is promoting your product...📢\n" +
-                "\n👏Attracted new users. Let's go!👏️️️\n";
+        String text = """
+                
+                📢Your team is promoting your product...📢
+                
+                👏Attracted new users. Let's go!👏️️️
+                """;
         print(text);
     }
 
     public void displayRechargeStatus() {
-        String text = "\n🪫Your team is taking a well-deserved break...🪫\n" +
-                "\n🔋Nap was good and laptop is fully charged🔋\n";
+        String text = """
+                
+                🪫Your team is taking a well-deserved break...🪫
+                
+                🔋Nap was good and laptop is fully charged🔋
+                """;
         print(text);
     }
 
