@@ -48,30 +48,32 @@ public class ConsoleIO {
 
     public void displayInstructions() {
         displayHeader("SILICON VALLEY TRAIL: INSTRUCTIONS");
-        System.out.println("""
-                            Your startup team will go from San Jose to San Francisco for Demo Day.
-                            \nManage your resources wisely:
-                            💵 Cash - Spend it like you mean it
-                            ☕️ Coffee - Fuel the grind
-                            😊 Team Morale - No meltdowns allowed
-                            📈 Daily Active Users - Drive engagement upward
-                            💻 Laptop Battery - No charging during use
-                            \nBest of luck!""");
+        print("""
+            Your startup team will go from San Jose to San Francisco for Demo Day.
+            \nManage your resources wisely:
+            💵 Cash - Spend it like you mean it
+            ☕️ Coffee - Fuel the grind
+            😊 Team Morale - No meltdowns allowed
+            📈 Daily Active Users - Drive engagement upward
+            💻 Laptop Battery - No charging during use
+            \nBest of luck!""");
+        enterToStart();
     }
 
-    public void displayGameMenu() {
-        System.out.println("""
-                         ******************************************************
-                         \nWhat will you do:
-                         
-                         1. Travel to next location (-cash, -coffee, -morale)
-                         2. Work on features (-coffee, -battery, -morale)
-                         3. Promote product (+cash, -battery, +users)
-                         4. Rest and recharge (+morale, +battery)
-                         5. Save and exit to menu
-                         
-                         ******************************************************
-                         """);
+    public void displayGameMenu(State state) {
+        displayProgressBar(state);
+        print("""
+             ******************************************************
+             \nWhat will you do:
+             
+             1. Travel to next location (-cash, -coffee, -morale)
+             2. Work on features (-coffee, -battery, -morale)
+             3. Promote product (+cash, -battery, +users)
+             4. Rest and recharge (+morale, +battery)
+             5. Save and exit to menu
+             
+             ******************************************************
+             """);
     }
 
     public void enterToStart() {
@@ -85,7 +87,7 @@ public class ConsoleIO {
     }
 
     public void displayProgressBar(State state) {
-        System.out.println("******************************************************");
+        print("******************************************************");
         System.out.printf("Day %d: | City: %s", state.getDay(), state.getCurrentCity().getName());
         System.out.printf("\n💵: $%d, ☕️: %d, 😊: %d/100, 📈: %d, 💻: %d/100\n",
                 state.getCash(), state.getCoffee(), state.getMorale(),
@@ -95,13 +97,13 @@ public class ConsoleIO {
 
     public void displayEvent(Event event) {
         String stars = "*".repeat(event.getTitle().length() + 7);
-        System.out.println(stars);
+        print(stars);
         System.out.printf("EVENT: %s \n", event.getTitle());
-        System.out.println(stars);
+        print(stars);
         for (String option : event.options()) {
            System.out.printf("\n%s", option);
         }
-        System.out.println("\n");
+        print("\n");
     }
 
     public void displayWarning(State state) {
@@ -114,12 +116,30 @@ public class ConsoleIO {
         print(stars +  text + stars);
     }
 
-    public void displayEndOfGameMessage(boolean success, String message) {
+    public void displayEndOfGameMessage(State state) {
+        boolean success = false;
         String text = "END OF THE GAME ";
-        if (!success) {
-            text += message + " You lose. 👎👎👎👎\n";
+        if (!state.hasNextCity()) {
+            success = !state.notEnoughUsers();
+            String message = success
+                    ? "🎉: Arrived in San Francisco and nailed your Demo Day. "
+                    : "📉: Arrived in San Francisco but didn't attract enough users. ";
+            text += message;
         } else {
-            text += message + " You win. 👍👍👍👍\n";
+            if (state.didLaptopDie()) {
+                text += "🪫: Your laptop died. ";
+            }
+            if (state.didCashRunOut()) {
+                text += "💰: You spent all of your money. ";
+            }
+            if (state.didTeamQuit()) {
+                text += "🏃: Your team quit. ";
+            }
+        }
+        if (!success) {
+            text += "You lose. 👎👎👎👎\n";
+        } else {
+            text += "You win. 👍👍👍👍\n";
         }
         String stars = STAR.repeat(text.length()) + "\n";
         print(stars +  text + stars);

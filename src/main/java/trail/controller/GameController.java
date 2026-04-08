@@ -5,9 +5,7 @@ import trail.model.Event;
 import trail.model.State;
 import trail.view.ConsoleIO;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +19,8 @@ public class GameController {
     private static final int STARTING_BATTERY = 100;
     private static final int STARTING_USERS = 20;
     private static final int STARTING_MORALE = 90;
+    private static final State STARTING_STATE = new State(
+            STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
 
     private static final ConsoleIO io = new ConsoleIO();
     private static final MapboxApiImpl mapbox = new MapboxApiImpl(
@@ -50,18 +50,14 @@ public class GameController {
     }
 
      private void startNewGame() {
-        State state = new State(
-                STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
         io.displayInstructions();
-        io.enterToStart();
-        runGameLoop(state);
+        runGameLoop(STARTING_STATE);
     }
 
      private void runGameLoop(State state) {
         boolean exitToMenu = false;
         while (!exitToMenu) {
-            io.displayProgressBar(state);
-            io.displayGameMenu();
+            io.displayGameMenu(state);
             int choice = io.getChoice(1, 5);
             switch (choice) {
                 case 1:
@@ -138,21 +134,9 @@ public class GameController {
     }
 
     protected boolean isEndOfGame(State state) {
-        if (state.didLaptopDie()) {
-            io.displayEndOfGameMessage(false, "🪫: Your laptop died.");
-            return true;
-        } else if (state.didCashRunOut()) {
-            io.displayEndOfGameMessage(false, "💰: You spent all of your money.");
-            return true;
-        } else if (state.didTeamQuit()) {
-            io.displayEndOfGameMessage(false, "🏃: Your team quit.");
-            return true;
-        } else if (!state.hasNextCity()) {
-            boolean success = !state.notEnoughUsers();
-            String message = success
-                    ? "🎉: Arrived in San Francisco and nailed your Demo Day."
-                    : "📉: Arrived in San Francisco but didn't attract enough users.";
-            io.displayEndOfGameMessage(success, message);
+        if (state.didLaptopDie() || state.didCashRunOut() ||
+                state.didTeamQuit() || !state.hasNextCity()) {
+            io.displayEndOfGameMessage(state);
             return true;
         }
         return false;
@@ -163,7 +147,11 @@ public class GameController {
     }
 
     private State loadGame() {
-        return stateSerializer.deserialize();
+        State state = stateSerializer.deserialize();
+        if (state == null) {
+            return STARTING_STATE;
+        }
+        return state;
     }
 
     protected static String getEnvVariable(String key) {
