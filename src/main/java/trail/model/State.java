@@ -1,20 +1,9 @@
 package trail.model;
 
 import com.google.gson.annotations.Expose;
+import trail.controller.GameConstants;
 
 public class State {
-    public static final City[] CITIES = new City[]{
-        new City("San Jose", -121.8863, 37.3382),
-        new City("Santa Clara", -121.9552, 37.3541),
-        new City("Sunnyvale", -122.0363, 37.3688),
-        new City("Mountain View", -122.0838, 37.3861),
-        new City("Palo Alto", -122.1430, 37.4419),
-        new City("Redwood City", -122.2364, 37.4852),
-        new City("San Mateo", -122.3255, 37.5630),
-        new City("Millbrae", -122.3872, 37.5985),
-        new City("South San Francisco", -122.4194, 37.6547),
-        new City("San Francisco", -122.4194, 37.7749)};
-
         @Expose
         private int cityIndex;
         @Expose
@@ -28,9 +17,9 @@ public class State {
         @Expose
         private int dailyActiveUsers;
         @Expose
-        private int day = 1;
+        private int day = GameConstants.STARTING_DAY;
         @Expose
-        private int consecutiveDays = 0;
+        private int consecutiveDaysWithoutCoffee = 0;
 
     public State(int coffee, int cash, int laptopBattery, int teamMorale, int dailyActiveUsers) {
         this.coffee = coffee;
@@ -41,14 +30,14 @@ public class State {
     }
 
     public City getCurrentCity() {
-        if (cityIndex >= CITIES.length) {
+        if (cityIndex >= GameConstants.CITIES.length) {
             throw new IllegalStateException();
         }
-        return CITIES[cityIndex];
+        return GameConstants.CITIES[cityIndex];
     }
 
     public boolean hasNextCity() {
-        return cityIndex < CITIES.length - 1;
+        return cityIndex < GameConstants.CITIES.length - 1;
     }
 
     public void getNextCity() {
@@ -59,27 +48,27 @@ public class State {
     }
 
     public int getProgressToSf() {
-        City first = CITIES[0];
+        City first = GameConstants.CITIES[0];
         City current = getCurrentCity();
-        City last = CITIES[CITIES.length - 1];
+        City last = GameConstants.CITIES[GameConstants.CITIES.length - 1];
         double distanceTravelled = current.getDistance(
-                first.getLatitude(), first.getLongitude());
-        double fullDistance = first.getDistance(
-                last.getLatitude(), last.getLongitude());
-        return (int) (distanceTravelled / fullDistance * 100);
+                first.latitude(), first.longitude());
+        double totalDistance = first.getDistance(
+                last.latitude(), last.longitude());
+        return (int) (distanceTravelled / totalDistance * 100);
     }
 
-    public void getNextDay() {
-        day++;
-    }
+    public void incrementDay() { day++; }
 
-    public int getNextConsecutiveDays() { return consecutiveDays++; }
+    public int getNextConsecutiveDays() { return consecutiveDaysWithoutCoffee++; }
+
+    public void resetConsecutiveDays() { consecutiveDaysWithoutCoffee = 0; }
 
     public void adjustCoffee(int coffee) {
         this.coffee = Math.max(0, this.coffee + coffee);
     }
     public void adjustMorale(int teamMorale) {
-        if (teamMorale < 0 && consecutiveDays >= 2) {
+        if (teamMorale < 0 && consecutiveDaysWithoutCoffee >= 2) {
             teamMorale *= 2;
         }
         this.teamMorale = Math.min(100, this.teamMorale + teamMorale);
@@ -97,12 +86,8 @@ public class State {
     public boolean didLaptopDie() {
         return laptopBattery <= 0;
     }
-    public boolean didTeamQuit() {
-        return teamMorale <= 0;
-    }
-    public boolean didCoffeeRunOut() {
-        return coffee <= 0;
-    }
+    public boolean didTeamQuit() { return teamMorale <= 0; }
+    public boolean didCoffeeRunOut() { return coffee <= 0; }
     public boolean didCashRunOut() {
         return cash <= 0;
     }
@@ -116,8 +101,6 @@ public class State {
     public int getMorale() { return teamMorale; }
     public int getUsers() { return dailyActiveUsers; }
     public int getDay() { return day; }
-
-    public void resetConsecutiveDays() { consecutiveDays = 0; }
 
     @Override
     public boolean equals(Object o) {

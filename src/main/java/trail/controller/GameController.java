@@ -5,28 +5,19 @@ import trail.model.Event;
 import trail.model.State;
 import trail.view.ConsoleIO;
 
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Random;
-
 public class GameController {
-    private static final String STATE_FILE_PATH = "./state.json";
-    private static final String ENV_FILE_PATH = ".env";
-    private static final int STARTING_COFFEE = 8;
-    private static final int STARTING_CASH = 5000;
-    private static final int STARTING_BATTERY = 100;
-    private static final int STARTING_USERS = 20;
-    private static final int STARTING_MORALE = 90;
-    private static final State STARTING_STATE = new State(
-            STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY, STARTING_MORALE, STARTING_USERS);
+    private final ConsoleIO io;
+    private final GameEvents gameEvents;
+    private final PersistState persistState;
 
-    private static final ConsoleIO io = new ConsoleIO();
-    private static final MapboxApiImpl mapbox = new MapboxApiImpl(
-            HttpClient.newHttpClient(), getEnvVariable("MAPBOX_SECRET_KEY"));
-    private static final GameEvents gameEvents = new GameEvents(mapbox);
-    private static final StateSerializer stateSerializer = new StateSerializer(STATE_FILE_PATH);
+    public GameController(
+            ConsoleIO io,
+            GameEvents gameEvents,
+            PersistState persistState) {
+        this.io = io;
+        this.gameEvents = gameEvents;
+        this.persistState = persistState;
+    }
 
     public void run() {
         boolean quit = false;
@@ -35,7 +26,8 @@ public class GameController {
             int choice = io.getChoice(1, 3);
             switch (choice) {
                 case 1:
-                    startNewGame();
+                    io.displayInstructions();
+                    runGameLoop(GameConstants.STARTING_STATE);
                     break;
                 case 2:
                     State state = loadGame();
@@ -47,11 +39,6 @@ public class GameController {
                     break;
             }
         }
-    }
-
-     private void startNewGame() {
-        io.displayInstructions();
-        runGameLoop(STARTING_STATE);
     }
 
      private void runGameLoop(State state) {
@@ -78,7 +65,7 @@ public class GameController {
                     exitToMenu = true;
                     break;
             }
-            checkEndOfDay(state);
+            processEndOfDay(state);
             if (isEndOfGame(state)) {
                 exitToMenu = true;
                 io.enterToMenu();
@@ -116,17 +103,17 @@ public class GameController {
     }
 
     private void triggerEvent(State state) {
-        Event event = gameEvents.getRandomEvent(new Random(), state);
+        Event event = gameEvents.getRandomEvent(state);
         io.displayEvent(event);
         int eventChoice = io.getChoice(1, event.options().size());
         event.selected(eventChoice);
     }
 
-    private void checkEndOfDay(State state) {
-        state.getNextDay();
+    private void processEndOfDay(State state) {
+        state.incrementDay();
         if (state.didCoffeeRunOut()) {
             if (state.getNextConsecutiveDays() >= 2) {
-                io.displayWarning(state);
+                io.displayConsecutiveDaysWithoutCoffeeWarning(state);
             }
         } else {
             state.resetConsecutiveDays();
@@ -143,29 +130,14 @@ public class GameController {
     }
 
     private void saveGame(State state) {
-        stateSerializer.serialize(state);
+        persistState.save(state);
     }
 
     private State loadGame() {
-        State state = stateSerializer.deserialize();
+        State state = persistState.load();
         if (state == null) {
-            return STARTING_STATE;
+            return GameConstants.STARTING_STATE;
         }
         return state;
-    }
-
-    protected static String getEnvVariable(String key) {
-        try {
-            String contents = Files.readString(Path.of(ENV_FILE_PATH));
-            for (String line : contents.split("\n")) {
-                String[] parts = line.split("=");
-                if (parts[0].equalsIgnoreCase(key)) {
-                    return parts[1];
-                }
-            }
-        } catch (IOException _) {
-
-        }
-        return null;
     }
 }
