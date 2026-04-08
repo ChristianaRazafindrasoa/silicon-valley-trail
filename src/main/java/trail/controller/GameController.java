@@ -21,16 +21,18 @@ public class GameController {
 
     public void run() {
         boolean quit = false;
+        State state;
         while (!quit) {
             io.displayMainMenu();
             int choice = io.getChoice(1, 3);
             switch (choice) {
                 case 1:
                     io.displayInstructions();
-                    runGameLoop(GameConstants.STARTING_STATE);
+                    state = GameConstants.STARTING_STATE;
+                    runGameLoop(state);
                     break;
                 case 2:
-                    State state = loadGame();
+                    state = loadGame();
                     runGameLoop(state);
                     break;
                 case 3:

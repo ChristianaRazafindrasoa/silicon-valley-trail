@@ -36,6 +36,4 @@ public class GameConstants {
             "GitHub Universe", "Stanford TreeHacks", "Nvidia GTC"};
     public static final String[] TECH_FAILURES = new String[]{
             "major bug", "server crash", "data leaked"};
-
-
 }
