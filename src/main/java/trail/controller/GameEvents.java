@@ -45,7 +45,7 @@ public class GameEvents {
     }
 
     protected Event coffeeShopEvent(State state) {
-        Event event = null;
+        Event event;
         City currentCity = state.getCurrentCity();
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", currentCity.getLatitude(), currentCity.getLongitude());

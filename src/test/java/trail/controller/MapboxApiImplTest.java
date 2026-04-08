@@ -15,7 +15,7 @@ class MapboxApiImplTest {
     private final String INVALID_KEY = "invalid-mapbox-key";
 
     @Test
-    void shouldReturnNonEmptySearchWithValidKey() throws IOException, InterruptedException {
+    void shouldReturnNonEmptySearchWithValidKey() {
         MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), VALID_KEY);
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", -126.3754, 37.3385);
@@ -25,12 +25,20 @@ class MapboxApiImplTest {
     }
 
     @Test
-    void shouldReturnEmptySearchWithInvalidKey() throws IOException, InterruptedException {
+    void shouldReturnEmptySearchWithInvalidKey() {
         MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), INVALID_KEY);
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", -126.3754, 37.3385);
         MapboxApi.MapboxApiSearchResponse response = mapbox.search(request);
         assertNotNull(response);
         assertEquals(0, response.entries().size());
+    }
+
+    @Test
+    void shouldThrowExceptionWithNullKey() {
+        MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), null);
+        MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
+                "coffee", -126.3754, 37.3385);
+        assertThrows(IllegalStateException.class, () -> mapbox.search(request));
     }
 }

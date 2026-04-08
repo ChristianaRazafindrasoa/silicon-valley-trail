@@ -24,10 +24,10 @@ public class MapboxApiImpl implements MapboxApi {
 
     @Override
     public MapboxApiSearchResponse search(MapboxApiSearchRequest request) {
-        MapboxApiSearchResponse response = new MapboxApiSearchResponse(new ArrayList<>());
         if (accessToken == null || accessToken.isBlank()) {
-            return response;
+            throw new IllegalStateException();
         }
+        MapboxApiSearchResponse response = new MapboxApiSearchResponse(new ArrayList<>());
         String url = String.format(
                 "https://api.mapbox.com/search/searchbox/v1/forward?q=%s" +
                         "&proximity=%s,%s&limit=3&access_token=%s",
