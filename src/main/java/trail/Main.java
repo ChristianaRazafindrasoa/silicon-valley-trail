@@ -11,7 +11,7 @@ public class Main {
     static void main() {
         String mapboxKey = GameUtility.getEnvVariable("MAPBOX_SECRET_KEY").orElse(null);
         if (mapboxKey == null) {
-            System.out.println("**Warning: Mapbox secret key not set up. Running on mock data.**");
+            System.out.println("Warning: Mapbox secret key not set up. Running on mock data.");
         }
 
         ConsoleIO io = new ConsoleIO();

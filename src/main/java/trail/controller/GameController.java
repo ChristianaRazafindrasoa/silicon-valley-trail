@@ -112,11 +112,7 @@ public class GameController {
     private void processEndOfDay(State state) {
         state.incrementDay();
         if (state.didCoffeeRunOut()) {
-            if (state.getNextConsecutiveDays() >= 2) {
-                io.displayConsecutiveDaysWithoutCoffeeWarning(state);
-            }
-        } else {
-            state.resetConsecutiveDays();
+            io.displayNoCoffeeWarning();
         }
     }
 
@@ -136,6 +132,7 @@ public class GameController {
     private State loadGame() {
         State state = gameLoader.load();
         if (state == null) {
+            System.out.println("No saved game found. Loading a new game...");
             return GameConstants.STARTING_STATE;
         }
         return state;

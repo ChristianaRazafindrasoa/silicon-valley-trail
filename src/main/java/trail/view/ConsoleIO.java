@@ -87,7 +87,7 @@ public class ConsoleIO {
     }
 
     public void displayProgressBar(State state) {
-        print("******************************************************");
+        print("\n******************************************************");
         System.out.printf("Day %d: | City: %s", state.getDay(), state.getCurrentCity().name());
         System.out.printf("\n💵: $%d, ☕️: %d, 😊: %d/100, 📈: %d, 💻: %d/100\n",
                 state.getCash(), state.getCoffee(), state.getMorale(),
@@ -106,12 +106,9 @@ public class ConsoleIO {
         print("\n");
     }
 
-    public void displayConsecutiveDaysWithoutCoffeeWarning(State state) {
-        String text = "WARNING: ";
-        if (state.didCoffeeRunOut()) {
-            text += "You ran out of coffee for more than two consecutive days, " +
-                    "team morale will decline 2x\n";
-        }
+    public void displayNoCoffeeWarning() {
+        String text = "WARNING: ☕️ No more coffee, " +
+                "team morale is declining 2x faster until replenished\n";;
         String stars = STAR.repeat(text.length()) + "\n";
         print(stars +  text + stars);
     }
