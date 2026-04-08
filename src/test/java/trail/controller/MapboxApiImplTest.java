@@ -1,32 +1,34 @@
 package trail.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import trail.model.MapboxApi;
 
-import java.io.IOException;
 import java.net.http.HttpClient;
-import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MapboxApiImplTest {
-    private final String VALID_KEY = GameController.getEnvVariable("MAPBOX_SECRET_KEY");
-    private final String INVALID_KEY = "invalid-mapbox-key";
 
     @Test
     void shouldReturnNonEmptySearchWithValidKey() {
-        MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), VALID_KEY);
+        Optional<String> validKey = GameUtility.getEnvVariable("MAPBOX_SECRET_KEY");
+        if (validKey.isEmpty()) {
+            System.out.println("Skipping test due to missing Mapbox key.");
+            return;
+        }
+        MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), validKey.get());
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", -126.3754, 37.3385);
         MapboxApi.MapboxApiSearchResponse response = mapbox.search(request);
         assertNotNull(response);
-        assertNotEquals(0, response.entries().size());
+        assertFalse(response.entries().isEmpty());
     }
 
     @Test
     void shouldReturnEmptySearchWithInvalidKey() {
-        MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), INVALID_KEY);
+        String invalidKey = "invalid-mapbox-key";
+        MapboxApiImpl mapbox = new MapboxApiImpl(HttpClient.newHttpClient(), invalidKey);
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", -126.3754, 37.3385);
         MapboxApi.MapboxApiSearchResponse response = mapbox.search(request);

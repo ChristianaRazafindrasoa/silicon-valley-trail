@@ -7,5 +7,7 @@ public interface MapboxApi {
     record MapboxApiSearchEntry(String name, double lat, double lon) { }
     record MapboxApiSearchResponse(List<MapboxApiSearchEntry> entries) { }
     record MapboxApiSearchRequest(String query, double lat, double lon) { }
-    MapboxApiSearchResponse search(MapboxApiSearchRequest request) throws IOException, InterruptedException;
+
+    MapboxApiSearchResponse search(MapboxApiSearchRequest request)
+            throws IOException, InterruptedException;
 }
