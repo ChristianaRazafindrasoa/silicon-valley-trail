@@ -1,6 +1,6 @@
 # 🌉 Silicon Valley Trail 
 
-A Java-based simulation game inspired by The Oregon Trail. Players navigate from San Jose to San Francisco while managing resources, making strategic decisions, and surviving the challenges of modern exploration.
+A Java-based simulation game inspired by The Oregon Trail. Players navigate from San Jose to San Francisco while managing resources, and making strategic decisions.
 
 Players must manage the following resources:
 - **💰 Cash**
@@ -64,7 +64,7 @@ AI tools were used to assist with:
 
 # Design Notes
 
-## Game Loop & balance approach
+## Game Loop
 1. Start the day
 2. Choose an action (search, explore, rest, etc.)
 3. Consume or reload resources
