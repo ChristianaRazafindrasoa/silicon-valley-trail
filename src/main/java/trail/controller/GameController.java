@@ -28,7 +28,7 @@ public class GameController {
             switch (choice) {
                 case 1:
                     io.displayInstructions();
-                    state = GameConstants.STARTING_STATE;
+                    state = GameConstants.buildStartingState();
                     runGameLoop(state);
                     break;
                 case 2:
@@ -135,7 +135,7 @@ public class GameController {
         State state = gameLoader.load();
         if (state == null) {
             System.out.println("No saved game found. Loading a new game...");
-            return GameConstants.STARTING_STATE;
+            return GameConstants.buildStartingState();
         }
         return state;
     }

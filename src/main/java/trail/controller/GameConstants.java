@@ -12,9 +12,7 @@ public class GameConstants {
     public static final int STARTING_USERS = 20;
     public static final int STARTING_MORALE = 90;
     public static final int STARTING_DAY = 1;
-    public static final State STARTING_STATE = new State(
-            STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY,
-            STARTING_MORALE, STARTING_USERS);
+
     public static final City[] CITIES = new City[]{
             new City("San Jose", -121.8863, 37.3382),
             new City("Santa Clara", -121.9552, 37.3541),
@@ -34,4 +32,10 @@ public class GameConstants {
             "GitHub Universe", "Stanford TreeHacks", "Nvidia GTC"};
     public static final String[] TECH_FAILURES = new String[]{
             "major bug", "server crash", "data leaked"};
+
+    public static State buildStartingState() {
+        return new State(
+                STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY,
+                STARTING_MORALE, STARTING_USERS);
+    }
 }
