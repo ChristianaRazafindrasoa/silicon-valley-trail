@@ -1,13 +1,14 @@
 # 🌉 Silicon Valley Trail 
 
-A Java-based simulation game inspired by The Oregon Trail. Players navigate from San Jose to San Francisco while managing resources, and making strategic decisions.
+A Java-based simulation game inspired by The Oregon Trail. Players navigate from San Jose to
+San Francisco while managing resources, and making strategic decisions.
 
 Players must manage the following resources:
-- **💰 Cash**
-- **☕ Coffee**
-- **😊 Team Morale**
-- **📈 Daily Active Users**
-- **🔋 Laptop Battery**
+- **💰 Cash**: If it hits zero, you lose
+- **😊 Team Morale**: If it drops to zero, you lose
+- **🔋 Laptop Battery**: If it dies, you lose
+- **☕️ Coffee**: If it runs out, morale declines at double speed
+- **📈 Daily Active Users**: Reach at least 200 users before SF to win
 
 ---
 
@@ -15,6 +16,29 @@ Players must manage the following resources:
 ### Prerequisites
 - Java 17+
 - Maven
+
+## Architecture
+
+This project is organized using the model view controller design pattern.
+
+- **Model**
+  - City: Describes a location in the game.
+  - Event: An event that impacts gameplay.
+  - MapboxApi: A Mapbox API interface.
+  - State: Stores the state of the game.
+- **View**
+  - ConsoleIO: Handles reading and writing to the console.
+- **Controller**
+  - GameConstants: Stores game constants.
+  - GameController: Stores core game logic.
+  - GameEvents: Builds a variety of events.
+  - GameLoader: Loads and saves the game state to a file.
+  - GameUtility: Utility code for loading environment variables.
+  - MapboxApiImpl: Implements the Mapbox API interface.
+
+## Dependencies
+- Junit 5.6.2 (for testing)
+- Gson 2.10.1 (for JSON parsing)
 
 ## Setup
 1. Clone the repository:
@@ -32,11 +56,11 @@ cp .env.example .env
 ```dotenv
 MAPBOX_SECRET_KEY=YOUR_KEY_HERE
 ```
-Get your secret access token here: https://www.mapbox.com
+Get your free access token here: https://www.mapbox.com
 
 ## Running the App
 ```bash
-mvn clean compile exec:java
+mvn clean compile exec:java -Dexec.mainClass="trail.Main"
 ```
 
 ## Testing
