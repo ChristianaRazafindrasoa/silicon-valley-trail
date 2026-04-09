@@ -66,7 +66,7 @@ public class GameEvents {
 
         for (MapboxApi.MapboxApiSearchEntry entry : response.entries()) {
             double distance = state.getCurrentCity()
-                    .getDistance(entry.lon(), entry.lat());
+                    .getDistance(entry.lat(), entry.lon());
             String option = String.format("%d. %s %.2f miles away (+coffee, -cash)",
                     index++, entry.name(), distance);
             options.add(option);

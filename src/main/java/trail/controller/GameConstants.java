@@ -14,16 +14,17 @@ public class GameConstants {
     public static final int STARTING_DAY = 1;
 
     public static final City[] CITIES = new City[]{
-            new City("San Jose", -121.8863, 37.3382),
-            new City("Santa Clara", -121.9552, 37.3541),
-            new City("Sunnyvale", -122.0363, 37.3688),
-            new City("Mountain View", -122.0838, 37.3861),
-            new City("Palo Alto", -122.1430, 37.4419),
-            new City("Redwood City", -122.2364, 37.4852),
-            new City("San Mateo", -122.3255, 37.5630),
-            new City("Millbrae", -122.3872, 37.5985),
-            new City("South San Francisco", -122.4194, 37.6547),
-            new City("San Francisco", -122.4194, 37.7749)};
+            new City("San Jose", 37.3382, -121.8863),
+            new City("Santa Clara", 37.3541, -121.9552),
+            new City("Sunnyvale", 37.3688, -122.0363),
+            new City("Mountain View", 37.3861, -122.0838),
+            new City("Palo Alto", 37.4419, -122.1430),
+            new City("Redwood City", 37.4852, -122.2364),
+            new City("San Mateo", 37.5630, -122.3255),
+            new City("Millbrae", 37.5985, -122.3872),
+            new City("South San Francisco", 37.6547, -122.4194),
+            new City("San Francisco", 37.7749, -122.4194)};
+
     public static final String[] COFFEE_SHOPS = new String[]{
             "Starbucks", "Dunkin'", "Dutch Bros"};
     public static final String[] CELEBRITY_NAMES = new String[]{

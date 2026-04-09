@@ -36,8 +36,8 @@ public class MapboxApiImpl implements MapboxApi {
                 "https://api.mapbox.com/search/searchbox/v1/forward?q=%s" +
                         "&proximity=%s,%s&limit=3&access_token=%s",
                 request.query(),
-                request.lat(),
                 request.lon(),
+                request.lat(),
                 accessToken);
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(url))
