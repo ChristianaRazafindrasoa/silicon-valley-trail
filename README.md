@@ -81,8 +81,8 @@ mvn test
 
 ## AI Usage
 AI tools were used to assist with:
-- API integration
-- Proof-reading
+- Researching the Mapbox API integration
+- Debugging Maven build errors
 
 ---
 
