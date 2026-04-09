@@ -47,7 +47,7 @@ public class MapboxApiImpl implements MapboxApi {
             if (httpResponse.statusCode() >= 200 && httpResponse.statusCode() <=299) {
                 response = parse(httpResponse.body());
             }
-        } catch (IOException | InterruptedException _) {}
+        } catch (IOException | InterruptedException ex) {}
 
         return response;
     }

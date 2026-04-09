@@ -44,7 +44,7 @@ class GameEventsTest {
 
     @Test
     void shouldReturnEventWhenApiReturnsNonEmpty() {
-        MapboxApi api = _ ->
+        MapboxApi api = request ->
                 new MapboxApi.MapboxApiSearchResponse(List.of(
                         new MapboxApi.MapboxApiSearchEntry("Dutch Bros", -121.32, 92.31)));
         Random random = new Random(3);

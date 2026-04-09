@@ -15,7 +15,7 @@ public class GameUtility {
                     return Optional.of(parts[1]);
                 }
             }
-        } catch (IOException _) {}
+        } catch (IOException ex) {}
         
         return Optional.empty();
     }
