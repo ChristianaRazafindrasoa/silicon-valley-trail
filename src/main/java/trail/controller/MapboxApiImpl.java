@@ -11,9 +11,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 
 public class MapboxApiImpl implements MapboxApi {
+    private static final Duration TIMEOUT = Duration.ofSeconds(10);
+
     private final HttpClient client;
     private final String accessToken;
 
@@ -38,6 +41,7 @@ public class MapboxApiImpl implements MapboxApi {
                 accessToken);
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .timeout(TIMEOUT)
                 .GET()
                 .build();
 
