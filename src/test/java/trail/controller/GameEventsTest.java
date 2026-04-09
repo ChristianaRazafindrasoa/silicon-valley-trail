@@ -21,7 +21,7 @@ class GameEventsTest {
         Random random = new Random(3);
         GameEvents gameEvents = new GameEvents(api, random);
         State state = new State(
-                12, 3500, 0, 65, 76);
+                12, 3500, 100, 65, 76);
         Event actualEvent = gameEvents.coffeeShopEvent(state);
         Event initialFallbackEvent =
                 new GameEvents(api, random).fallbackCoffeeShopEvent(state);
@@ -35,7 +35,7 @@ class GameEventsTest {
         Random random = new Random(3);
         GameEvents gameEvents = new GameEvents(api, random);
         State state = new State(
-                12, 3500, 0, 65, 76);
+                12, 3500, 100, 65, 76);
         Event actualEvent = gameEvents.coffeeShopEvent(state);
         Event initialFallbackEvent =
                 new GameEvents(api, random).fallbackCoffeeShopEvent(state);
@@ -50,7 +50,7 @@ class GameEventsTest {
         Random random = new Random(3);
         GameEvents gameEvents = new GameEvents(api, random);
         State state = new State(
-                12, 3500, 0, 65, 76);
+                12, 3500, 100, 65, 76);
         Event event = gameEvents.coffeeShopEvent(state);
         assertNotNull(event);
         assertEquals(2, event.options().size());

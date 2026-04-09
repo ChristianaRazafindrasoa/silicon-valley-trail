@@ -10,7 +10,7 @@ class GameLoaderTest {
     @Test
     void shouldHaveSameStateAfterSaveSerializeAndDeserializeLoad() {
         GameLoader gameLoader = new GameLoader("./state-test.json");
-        State state = new State(12, 3500, 0, 65, 76);
+        State state = new State(12, 3500, 100, 65, 76);
         gameLoader.save(state);
         assertEquals(state, gameLoader.load());
     }
@@ -19,7 +19,7 @@ class GameLoaderTest {
     void shouldNotSerializeInvalidPath() {
         GameLoader gameLoader = new GameLoader("./invalid/state-test.json");
         State state = new State(
-                12, 3500, 0, 65, 76);
+                12, 3500, 100, 65, 76);
         assertThrows(IllegalStateException.class, () -> gameLoader.save(state));
     }
 
@@ -27,7 +27,7 @@ class GameLoaderTest {
     void shouldNotDeserializeInvalidPath() {
         GameLoader gameLoader = new GameLoader("./state-test.json");
         State state = new State(
-                12, 3500, 0, 65, 76);
+                12, 3500, 100, 65, 76);
         gameLoader.save(state);
         gameLoader = new GameLoader("./invalid/state-test.json");
         assertThrows(IllegalStateException.class, gameLoader::load);
