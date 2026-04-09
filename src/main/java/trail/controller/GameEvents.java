@@ -43,6 +43,7 @@ public class GameEvents {
         City currentCity = state.getCurrentCity();
         MapboxApi.MapboxApiSearchRequest request = new MapboxApi.MapboxApiSearchRequest(
                 "coffee", currentCity.latitude(), currentCity.longitude());
+
         try {
             MapboxApi.MapboxApiSearchResponse response = mapbox.search(request);
             event = buildCoffeeShopEvent(state, response);
@@ -60,6 +61,7 @@ public class GameEvents {
         List<Runnable> runnables = new ArrayList<>(response.entries().size() + 1);
         Runnable runnable = () -> {state.adjustCoffee(+4); state.adjustCash(-300);};
         int index = 1;
+
         for (MapboxApi.MapboxApiSearchEntry entry : response.entries()) {
             double distance = state.getCurrentCity()
                     .getDistance(entry.lon(), entry.lat());

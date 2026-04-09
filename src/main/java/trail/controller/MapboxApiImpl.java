@@ -48,6 +48,7 @@ public class MapboxApiImpl implements MapboxApi {
                 response = parse(httpResponse.body());
             }
         } catch (IOException | InterruptedException _) {}
+
         return response;
     }
 
@@ -57,6 +58,7 @@ public class MapboxApiImpl implements MapboxApi {
                 .getAsJsonArray("features");
 
         MapboxApiSearchResponse response = new MapboxApiSearchResponse(new ArrayList<>());
+
         for (JsonElement element : features) {
             JsonObject properties = element.getAsJsonObject()
                     .getAsJsonObject("properties");

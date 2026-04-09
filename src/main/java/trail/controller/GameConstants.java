@@ -15,7 +15,6 @@ public class GameConstants {
     public static final State STARTING_STATE = new State(
             STARTING_COFFEE, STARTING_CASH, STARTING_BATTERY,
             STARTING_MORALE, STARTING_USERS);
-
     public static final City[] CITIES = new City[]{
             new City("San Jose", -121.8863, 37.3382),
             new City("Santa Clara", -121.9552, 37.3541),
@@ -27,7 +26,6 @@ public class GameConstants {
             new City("Millbrae", -122.3872, 37.5985),
             new City("South San Francisco", -122.4194, 37.6547),
             new City("San Francisco", -122.4194, 37.7749)};
-
     public static final String[] COFFEE_SHOPS = new String[]{
             "Starbucks", "Dunkin'", "Dutch Bros"};
     public static final String[] CELEBRITY_NAMES = new String[]{
