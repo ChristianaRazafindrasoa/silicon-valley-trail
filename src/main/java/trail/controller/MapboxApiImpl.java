@@ -27,7 +27,7 @@ public class MapboxApiImpl implements MapboxApi {
 
     @Override
     public MapboxApiSearchResponse search(MapboxApiSearchRequest request) {
-        if (accessToken == null || accessToken.isBlank()) {
+        if (accessToken == null) {
             throw new IllegalStateException();
         }
 

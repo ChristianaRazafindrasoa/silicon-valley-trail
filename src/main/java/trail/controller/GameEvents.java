@@ -46,14 +46,16 @@ public class GameEvents {
 
         try {
             MapboxApi.MapboxApiSearchResponse response = mapbox.search(request);
-            event = buildCoffeeShopEvent(state, response);
+            event = mapboxResponseToCoffeeShopEvent(state, response);
         } catch (Throwable throwable) {
             event = fallbackCoffeeShopEvent(state);
         }
         return event;
     }
 
-    private Event buildCoffeeShopEvent(State state, MapboxApi.MapboxApiSearchResponse response) {
+    private Event mapboxResponseToCoffeeShopEvent(
+            State state,
+            MapboxApi.MapboxApiSearchResponse response) {
         if (response.entries() == null || response.entries().isEmpty()) {
             return fallbackCoffeeShopEvent(state);
         }
