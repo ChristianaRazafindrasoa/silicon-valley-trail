@@ -5,6 +5,8 @@ import trail.model.Event;
 import trail.model.State;
 import trail.view.ConsoleIO;
 
+import java.util.Optional;
+
 public class GameController {
     private final ConsoleIO io;
     private final GameEvents gameEvents;
@@ -132,11 +134,11 @@ public class GameController {
     }
 
     private State loadGame() {
-        State state = gameLoader.load();
-        if (state == null) {
+        Optional<State> state = gameLoader.load();
+        if (state.isEmpty()) {
             System.out.println("No saved game found. Loading a new game...");
             return GameConstants.buildStartingState();
         }
-        return state;
+        return state.get();
     }
 }

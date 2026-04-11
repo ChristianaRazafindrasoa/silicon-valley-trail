@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder;
 import trail.model.State;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class GameLoader {
     private final String filePath;
@@ -31,12 +31,12 @@ public class GameLoader {
         }
     }
 
-    public State load() {
+    public Optional<State> load() {
         try {
             String json = Files.readString(Path.of(filePath));
-            return deserialize(json);
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load game", ex);
+            return Optional.of(deserialize(json));
+        } catch (Throwable ex) {
+            return Optional.empty();
         }
     }
 

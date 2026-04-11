@@ -54,6 +54,6 @@ class GameEventsTest {
         Event event = gameEvents.coffeeShopEvent(state);
         assertNotNull(event);
         assertEquals(2, event.options().size());
-        assertTrue(event.options().getFirst().contains("Dutch Bros"));
+        assertTrue(event.options().get(0).contains("Dutch Bros"));
     }
 }

@@ -3,6 +3,8 @@ package trail.controller;
 import org.junit.jupiter.api.Test;
 import trail.model.State;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameLoaderTest {
@@ -12,7 +14,7 @@ class GameLoaderTest {
         GameLoader gameLoader = new GameLoader("./state-test.json");
         State state = new State(12, 3500, 100, 65, 76);
         gameLoader.save(state);
-        assertEquals(state, gameLoader.load());
+        assertEquals(Optional.of(state), gameLoader.load());
     }
 
     @Test
@@ -30,6 +32,6 @@ class GameLoaderTest {
                 12, 3500, 100, 65, 76);
         gameLoader.save(state);
         gameLoader = new GameLoader("./invalid/state-test.json");
-        assertThrows(IllegalStateException.class, gameLoader::load);
+        assertTrue(gameLoader.load().isEmpty());
     }
 }
